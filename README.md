@@ -79,7 +79,7 @@ public class HelloScaffoldUnitTest {
 
 
 ####STEP 4. create json file
-You should create the json file which name is the same as your test class. And under `src/resources` create the same folders just like the folders which your java file in. For example your java file `ScaffoldUnitTest.java` package is `org.crazycake.ScaffoldUnit` then the json file path should be `src/resources/org/crazycake/ScaffoldUnit/ScaffoldUnitTest.json`.
+You should create the json file which name is the same as your test class. And under `test/resources` create the same folders just like the folders which your java file in. For example your java file `ScaffoldUnitTest.java` package is `org.crazycake.ScaffoldUnit` then the json file path should be `test/resources/org/crazycake/ScaffoldUnit/ScaffoldUnitTest.json`.
 
 ```json
 {
