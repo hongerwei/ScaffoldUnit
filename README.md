@@ -77,7 +77,7 @@ public class HelloScaffoldUnitTest {
 
 
 ####STEP 4. create json file
-You should create the json file beside your test class which name is the same as your test class. Here we take `ScaffoldUnitTest.java` for example. You should create a json file named `ScaffoldUnit.json` beside it.
+You should create the json file which name is the same as your test class. And under `src/resources` create the same folders just like the folders which your java file in. For example your java file `ScaffoldUnitTest.java` package is `org.crazycake.ScaffoldUnit` then the json file path should be `src/resources/org/crazycake/ScaffoldUnit/ScaffoldUnitTest.json`.
 
 ```json
 {
@@ -282,12 +282,12 @@ CREATE TABLE `nemo_hello` (
 
 /*Table structure for table `nemo_keyword` */
 
-DROP TABLE IF EXISTS `nemo_keyword`;
+DROP TABLE IF EXISTS `student`;
 
-CREATE TABLE `nemo_keyword` (
-  `keyword_id` int(11) NOT NULL auto_increment,
-  `keyword` varchar(300) NOT NULL,
-  PRIMARY KEY  (`keyword_id`)
+CREATE TABLE `student` (
+  `id` int(11) NOT NULL,
+  `name` varchar(300) NOT NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 

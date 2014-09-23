@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ScaffoldUnitDao {
 
+	private static boolean initialized = false;
+	
 	private static Connection conn;
 	
 	private static String url;
@@ -75,7 +77,7 @@ public class ScaffoldUnitDao {
 		} catch (SQLException e) {
 			logger.error("ScaffoldUnit execute SQL error! SQL: "+sql,e);
 			String errorMessage = e.getMessage();
-			if(errorMessage.startsWith("Table ") && errorMessage.endsWith(" doesn't exist")){
+			if(errorMessage.startsWith("Table ") && errorMessage.endsWith(" doesn't exist") && !initialized){
 				boolean initOk = initStructure();
 				
 				if(initOk){
@@ -116,6 +118,8 @@ public class ScaffoldUnitDao {
 	}
 	
 	protected boolean initStructure() throws IOException, SQLException{
+		initialized = true;
+		
 		logger.info("Use ScaffoldUnit.sql to initialize structure. Please make sure ScaffoldUnit.sql is at your classpath!");
 		ScriptRunner runner = new ScriptRunner(conn, false, true);
 		

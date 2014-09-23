@@ -1,11 +1,15 @@
 package org.crazycake.ScaffoldUnit;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
+
 import static org.hamcrest.CoreMatchers.*;
+
 import org.junit.Test;
 
 public class HelloScaffoldUnitTest {
@@ -17,9 +21,11 @@ public class HelloScaffoldUnitTest {
 		ScaffoldUnit.build();
 		
 		//test your code
-		Class.forName("com.mysql.jdbc.Driver");
+		InputStream inputStream = ScaffoldUnit.class.getClassLoader().getResourceAsStream("ScaffoldUnit.properties");
+		Properties prop = new Properties();
+		prop.load(inputStream);
 		Connection conn = null;
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sunit_test?useUnicode=true&characterEncoding=UTF-8","root", "qwer1234");
+		conn = DriverManager.getConnection(prop.getProperty("ScaffoldUnit.jdbc.url"),prop.getProperty("ScaffoldUnit.jdbc.username"), prop.getProperty("ScaffoldUnit.jdbc.password"));
 		Statement stat = conn.createStatement();
 		stat.execute("update student set name='ted' where name='jack'");
 		stat.close();

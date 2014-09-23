@@ -2,7 +2,7 @@
 SQLyog Ultimate v8.71 
 MySQL - 5.0.51b-community-nt : Database - nemo_test
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -35,12 +35,12 @@ CREATE TABLE `nemo_hello` (
 
 /*Table structure for table `nemo_keyword` */
 
-DROP TABLE IF EXISTS `nemo_keyword`;
+DROP TABLE IF EXISTS `student`;
 
-CREATE TABLE `nemo_keyword` (
-  `keyword_id` int(11) NOT NULL auto_increment,
-  `keyword` varchar(300) NOT NULL,
-  PRIMARY KEY  (`keyword_id`)
+CREATE TABLE `student` (
+  `id` int(11) NOT NULL,
+  `name` varchar(300) NOT NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 
