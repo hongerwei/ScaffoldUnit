@@ -1,6 +1,8 @@
 ScaffoldUnit
 ============
 
+[![Build Status](https://travis-ci.org/alexxiyang/ScaffoldUnit.svg?branch=master)](https://travis-ci.org/alexxiyang/ScaffoldUnit)
+
 Whether you have such experience：When you come to test some unit test with database operations, you have to manually change the database data again and again before you run JUnit test?
 ScaffoldUnit is to deal with such problem. It will helps you initialize the test data you need before you run the test case. Let me see how ScaffoldUnit will do. 
 
