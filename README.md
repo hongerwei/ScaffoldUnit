@@ -6,8 +6,6 @@ ScaffoldUnit
 Whether you have such experience：When you come to test some unit test with database operations, you have to manually change the database data again and again before you run JUnit test?
 ScaffoldUnit is to deal with such problem. It will helps you initialize the test data you need before you run the test case. Let me see how ScaffoldUnit will do. 
 
-> Only tested on mysql for now.
-
 Maven dependency
 -------------
 ```xml
@@ -331,7 +329,7 @@ student:info1,info2
 employee:family,company
 ```
 
-> NOTE: ScaffoldUnit will truncate all tables you wrote. So make sure you use a blank hbase database instead of using production environment.
+> NOTE: ScaffoldUnit will truncate all tables you wrote. So make sure you use a blank hbase database instead of using production environment or use some fake table to test.
 
 create `helloworld.json` . The first column must name `rowkey`. Column naming rule is : `column family name` : `column name`. For example `info1:name`.
 ```javascript
