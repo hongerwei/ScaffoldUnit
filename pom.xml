@@ -4,7 +4,7 @@
 
   <groupId>org.crazycake</groupId>
   <artifactId>ScaffoldUnit</artifactId>
-  <version>1.0.0-RELEASE</version>
+  <version>1.1.0-RELEASE</version>
   <packaging>jar</packaging>
 
   <name>ScaffoldUnit</name>
@@ -37,20 +37,20 @@
 		<version>1.9.13</version>
 	</dependency>
 	<dependency>
-		<groupId>log4j</groupId>
-		<artifactId>log4j</artifactId>
-		<version>1.2.4</version>
-	</dependency>
-	<dependency>
 		<groupId>org.slf4j</groupId>
 		<artifactId>slf4j-api</artifactId>
-		<version>1.2</version>
+		<version>1.7.2</version>
 	</dependency>
 	<dependency>
 		<groupId>org.slf4j</groupId>
 		<artifactId>slf4j-log4j12</artifactId>
-		<version>1.2</version>
+		<version>1.7.2</version>
 	</dependency>
+    <dependency>  
+         <groupId>org.apache.hbase</groupId>  
+         <artifactId>hbase-client</artifactId>  
+         <version>0.98.4-hadoop2</version>  
+     </dependency>
   </dependencies>
   <licenses>
 		<license>

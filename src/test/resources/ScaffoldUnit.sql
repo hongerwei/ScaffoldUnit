@@ -2,7 +2,7 @@
 SQLyog Ultimate v8.71 
 MySQL - 5.0.51b-community-nt : Database - nemo_test
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 

@@ -1,7 +1,7 @@
 {
 	"ms":[
 		{
-			"n":"testBuild",
+			"n":"testMysqlBuild",
 			"ts":[
 				{
 					"t":"student",
@@ -14,6 +14,36 @@
 							{
 								"c":"name",
 								"v":"'jack'"
+							}
+						]
+					]
+				}
+			]
+		},
+		{
+			"n":"testHbaseBuild",
+			"ts":[
+				{
+					"t":"student",
+					"rs":[
+						[
+							{
+								"c":"rowkey",
+								"v":"row1"
+							},
+							{
+								"c":"info1:name",
+								"v":"jack"
+							}
+						],
+						[
+							{
+								"c":"rowkey",
+								"v":"row2"
+							},
+							{
+								"c":"info1:name",
+								"v":"ted"
 							}
 						]
 					]

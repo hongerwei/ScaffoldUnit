@@ -14,7 +14,7 @@ Maven dependency
 <dependency>
   <groupId>org.crazycake</groupId>
   <artifactId>ScaffoldUnit</artifactId>
-  <version>1.0.0-RELEASE</version>
+  <version>1.1.0-RELEASE</version>
 </dependency>
 ```
 
@@ -27,7 +27,13 @@ create `ScaffoldUnit.properties` at the root of classpath.  Here is an example
 ScaffoldUnit.jdbc.url=jdbc:mysql://localhost:3306/sunit_test?useUnicode=true&characterEncoding=UTF-8
 ScaffoldUnit.jdbc.username=root
 ScaffoldUnit.jdbc.password=123456
+ScaffoldUnit.jdbc.type=mysql
 ```
+
+Support types:
+
+ - mysql
+ - hbase
 
 ####STEP 2. create test database
 create a database named `sunit_test` and create a table `student`
@@ -52,6 +58,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
+import org.junit.Assert;
 
 public class HelloScaffoldUnitTest {
 	
@@ -71,7 +78,11 @@ public class HelloScaffoldUnitTest {
 		conn.close();
 		
 		//3 assert your result
-		ScaffoldUnit.dbAssertThat("select name from student where id=1", is("ted"));
+		SCol queryCondition = new SCol();
+		queryCondition.setC("id");
+		queryCondition.setV(1);
+		Object actual = ScaffoldUnit.queryOneValue("name","student",queryCondition);
+		Assert.assertThat((String)actual,is("ted"));
 		
 	}
 }
@@ -130,7 +141,8 @@ If you add log4j to your project then you will see these logs.
 **ScaffoldUnit** won't recover the test data. Instead, it clean all data of the tables which test case will use and initialize the data.
 
 ##xxxx.json
-Every test case you needs ScaffoldUnit to initialize the database should have a json file beside it.
+Every test case you needs ScaffoldUnit to initialize the database should have a json file be placed in `/src/test/resources` folder. And make sure the path structure this json have is the same as the test case java file. For example, you want to run this test case `org/crazycake/ScaffoldUnit/HelloScaffoldUnitTest.java` , you should create a json file name `HelloScaffoldUnitTest.json` and place it under `src/test/resources/org/crazy/ScaffoldUnit/`
+
 ###attribute names
 Here are the meas of the json attributes
 
@@ -158,7 +170,7 @@ If you want ScaffoldUnit just clean the data of table and don't want to insert a
 	"v":"'jack'"
 }
 ```
-###more complex example
+###example
 ```json
 {
 	"ms":[
@@ -232,13 +244,17 @@ If you want ScaffoldUnit just clean the data of table and don't want to insert a
 ##build methods
 Call `ScaffoldUnit.build()` when you're ready. It will initialize your test data. You can also use these methods: `comeAndBiteMe` `iHateWorkOvertime` `screwU` `myBossIsAMuggle` and `wtf`. They  are all equivalent to `build()`, nothing different. If you want to add more method like them then create the pull request. :) 
 
-##Database assert
-For convenient, **ScaffoldUnit** provide a method `dbAssertThat` . You can assign a sql and a `Matcher` . **ScaffoldUnit** will run this sql and compare the first column of first row of result to the `Matcher`
+##queryOneValue
+For convenient, **ScaffoldUnit** provide a method `queryOneValue` . You can query one column of one row from a table without writing database connection code at all. 
 ```java
 import static org.hamcrest.CoreMatchers.*;
 ...
 
-ScaffoldUnit.dbAssertThat("select name from student where id=1", is("ted"));
+SCol queryCondition = new SCol();
+queryCondition.setC("id");
+queryCondition.setV(1);
+Object actual = ScaffoldUnit.queryOneValue("name","student",queryCondition);
+Assert.assertThat((String)actual,is("ted"));
 ```
 
 ##auto initialize structure
@@ -300,6 +316,58 @@ CREATE TABLE `student` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 ```
 
+##Hbase support
+ScaffoldUnit can also support `Hbase` . Here is an example of Hbase configuration.
+update `ScaffoldUnit.properties` under classpath
+```properties
+ScaffoldUnit.jdbc.url=host1:2181,host2:2181
+ScaffoldUnit.jdbc.username=
+ScaffoldUnit.jdbc.password=
+ScaffoldUnit.jdbc.type=hbase
+```
+create `ScaffoldUnit.hbase` under classpath. Write down what tables and what column families these tables should have.
+```bash
+student:info1,info2
+employee:family,company
+```
+
+> NOTE: ScaffoldUnit will truncate all tables you wrote. So make sure you use a blank hbase database instead of using production environment.
+
+create `helloworld.json` . The first column must name `rowkey`. Column naming rule is : `column family name` : `column name`. For example `info1:name`.
+```javascript
+{
+   "ms":[
+		"n":"testHbaseBuild",
+		"ts":[
+			{
+				"t":"student",
+				"rs":[
+					[
+						{
+							"c":"rowkey",
+							"v":"row1"
+						},
+						{
+							"c":"info1:name",
+							"v":"jack"
+						}
+					],
+					[
+						{
+							"c":"rowkey",
+							"v":"row2"
+						},
+						{
+							"c":"info1:name",
+							"v":"ted"
+						}
+					]
+				]
+			}
+		]
+	]
+}
+```
 
 ##If you found any bugs
 Please send email to idante@qq.com
