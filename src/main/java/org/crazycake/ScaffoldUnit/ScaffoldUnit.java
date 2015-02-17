@@ -1,18 +1,17 @@
 package org.crazycake.ScaffoldUnit;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.crazycake.ScaffoldUnit.dao.ScaffoldUnitDao;
+import org.crazycake.ScaffoldUnit.dao.IScaffoldUnitDao;
+import org.crazycake.ScaffoldUnit.dao.ScaffoldUnitDaoFactory;
 import org.crazycake.ScaffoldUnit.model.SCol;
 import org.crazycake.ScaffoldUnit.model.SMethod;
 import org.crazycake.ScaffoldUnit.model.STable;
 import org.crazycake.ScaffoldUnit.model.Sconf;
-import org.hamcrest.Matcher;
+import org.crazycake.ScaffoldUnit.utils.PropLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,7 @@ public class ScaffoldUnit {
 	
 	private static Logger logger = LoggerFactory.getLogger(ScaffoldUnit.class);
 	
-	private static ScaffoldUnitDao dao = new ScaffoldUnitDao();
+	private static IScaffoldUnitDao dao = ScaffoldUnitDaoFactory.getDao(PropLoader.getType());
 	
 	
 	/**
@@ -30,7 +29,7 @@ public class ScaffoldUnit {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	private static void buildIt() throws IOException, SQLException{
+	private static void buildIt() throws Exception{
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		StackTraceElement s = stackTraceElements[3];
 		
@@ -41,7 +40,7 @@ public class ScaffoldUnit {
 		try {
 			 sconf = mapper.readValue(Class.forName(callerClassFullName).getResourceAsStream(callerClassName+".json"), Sconf.class);
 		} catch (Throwable e) {
-			e.printStackTrace();
+		    logger.error("build scaffold error!",e);
 		}
 		
 		if(sconf==null){
@@ -64,7 +63,7 @@ public class ScaffoldUnit {
 			return;
 		}
 		
-		cleanTables(ts);
+		dao.cleanTables(ts);
 		
 		initialTables(ts);
 	}
@@ -92,7 +91,7 @@ public class ScaffoldUnit {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public static void build() throws IOException, SQLException{
+	public static void build() throws Exception{
 		buildIt();
 	}
 	
@@ -101,10 +100,10 @@ public class ScaffoldUnit {
 	 * @param sql
 	 * @param matcher
 	 * @throws SQLException
+	 * @throws IOException 
 	 */
-	public static void dbAssertThat(String sql,Matcher matcher) throws SQLException{
-		Object actual = dao.queryOneValue(sql);
-		assertThat(sql, actual, matcher);
+	public static Object queryOneValue(String col, String tableName, SCol queryCondition) throws Exception{
+		return dao.queryOneValue(col,tableName,queryCondition);
 	}
 
 	/**
@@ -113,7 +112,7 @@ public class ScaffoldUnit {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	private static void initialTables(List<STable> ts) throws IOException, SQLException {
+	private static void initialTables(List<STable> ts) throws Exception {
 		//insert
 		for(STable t:ts){
 			
@@ -133,7 +132,7 @@ public class ScaffoldUnit {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	private static void insertRows(STable t, List<List<SCol>> rs) throws IOException, SQLException {
+	private static void insertRows(STable t, List<List<SCol>> rs) throws Exception {
 		for(int i =0 ;i<rs.size();i++){
 			List<SCol> cs = rs.get(i);
 			
@@ -141,80 +140,33 @@ public class ScaffoldUnit {
 				continue;
 			}
 			
-			insertRow(t.getT(),cs);
+			dao.insertRow(t.getT(),cs);
 		}
 	}
 	
-	/**
-	 * insert one row
-	 * @param t
-	 * @param cs
-	 * @throws SQLException 
-	 * @throws IOException 
-	 */
-	private static void insertRow(String t, List<SCol> cs) throws IOException, SQLException{
-		StringBuilder fields = new StringBuilder();
-		fields.append("(");
-		
-		StringBuilder values = new StringBuilder();
-		values.append("(");
-		
-		for(int j=0;j<cs.size();j++){
-			
-			SCol c = cs.get(j);
-			
-			if(j!=0){
-				fields.append(",");
-				values.append(",");
-			}
-			fields.append(c.getC());
-			values.append(c.getV());
-			
-			if(j==cs.size()-1){
-				fields.append(")");
-				values.append(")");
-			}
-		}
-		
-		String insertSql = "insert into " + t + " " +  fields.toString() + " values " + values.toString();
-		dao.execute(insertSql);
-	}
-
-	/**
-	 * truncate all tables
-	 * @param ts
-	 * @throws SQLException 
-	 * @throws IOException 
-	 */
-	private static void cleanTables(List<STable> ts) throws IOException, SQLException {
-		//clean
-		for(STable t:ts){
-			dao.execute("truncate table " + t.getT());
-		}
-	}
 	
-	public static void wtf() throws IOException, SQLException{
-		System.out.println("ScaffoldUnit said: \"wtf!\"");
+	public static void wtf() throws Exception{
+	    logger.info("ScaffoldUnit said: \"wtf!\"");
 		buildIt();
 	}
 	
-	public static void iHateWorkOvertime() throws IOException, SQLException{
-		System.out.println("ScaffoldUnit said: \"I hate work overtime!\"");
+	public static void iHateWorkOvertime() throws Exception{
+	    logger.info("ScaffoldUnit said: \"I hate work overtime!\"");
 		buildIt();
 	}
 	
-	public static void comeAndBiteMe() throws IOException, SQLException{
-		System.out.println("ScaffoldUnit said: \"Come and bite me!\"");
+	public static void comeAndBiteMe() throws Exception{
+	    logger.info("ScaffoldUnit said: \"Come and bite me!\"");
 		buildIt();
 	}
 	
-	public static void screwU() throws IOException, SQLException{
-		System.out.println("ScaffoldUnit said: \"Screw U!\"");
+	public static void screwU() throws Exception{
+	    logger.info("ScaffoldUnit said: \"Screw U!\"");
 		buildIt();
 	}
 	
-	public static void myBossIsAMuggle() throws IOException, SQLException{
-		System.out.println("ScaffoldUnit said: \"My boss is a muggle!\"");
+	public static void myBossIsAMuggle() throws Exception{
+	    logger.info("ScaffoldUnit said: \"My boss is a muggle!\"");
 		buildIt();
 	}
 }

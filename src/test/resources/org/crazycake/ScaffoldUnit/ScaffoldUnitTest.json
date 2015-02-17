@@ -31,7 +31,7 @@
 			]
 		},
 		{
-			"n":"testBuild",
+			"n":"testMysqlBuild",
 			"ts":[
 				{
 					"t":"nemo_hello",
